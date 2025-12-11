@@ -1,82 +1,140 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
+import { Link, useNavigate } from "react-router";
 import useAuth from "../../hooks/useAuth";
-import { Link } from "react-router";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 const HrRegister = () => {
+  const [loading, setLoading] = useState(false);
+  const { registerUser, updateUserProfile } = useAuth();
+  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const { registerUser } = useAuth();
-  const handleHrRegistration = (data) => {
-    console.log("After submit", data);
-    registerUser(data.email, data.password)
-      .then((result) => {
-        console.log(result.user);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+
+  // --------------------------
+  // Upload to ImgBB
+  // --------------------------
+  const uploadImageToImgBB = async (imageFile) => {
+    const formData = new FormData();
+    formData.append("image", imageFile);
+
+    const url = `https://api.imgbb.com/1/upload?key=${
+      import.meta.env.VITE_IMGBB_API_KEY
+    }`;
+
+    const response = await axios.post(url, formData);
+    return response.data.data.url; // hosted image URL
   };
+
+  // --------------------------
+  // HANDLE HR REGISTRATION
+  // --------------------------
+  const handleHrRegistration = async (data) => {
+    setLoading(true);
+
+    try {
+      // 1. Upload image to ImgBB
+      const imageFile = data.photo[0];
+      const companyLogoURL = await uploadImageToImgBB(imageFile);
+
+      // 2. Create Firebase user
+      const result = await registerUser(data.email, data.password);
+      const firebaseUser = result.user;
+      console.log("firebaseUser", firebaseUser);
+
+      // 3. Update Firebase displayName + photoURL
+      await updateUserProfile({
+        displayName: data.name,
+        photoURL: companyLogoURL,
+      });
+
+      // ---------------------
+      // 4. Prepare HR data for backend (later)
+      // ---------------------
+      const hrUserData = {
+        name: data.name,
+        companyName: data.company,
+        companyLogo: companyLogoURL,
+        email: data.email,
+        dateOfBirth: data.dateOfBirth,
+
+        // Auto-assigned values
+        role: "hr",
+        packageLimit: 5,
+        currentEmployees: 0,
+        subscription: "basic",
+      };
+
+      console.log("Data to save in backend:", hrUserData);
+
+      toast.success("Registration Successful!");
+      navigate("/login");
+    } catch (error) {
+      console.log(error);
+      toast.error(error.message || "Registration failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-base-200 p-4">
       <div className="w-full max-w-lg p-6 bg-base-100 rounded-xl shadow-xl">
         <h2 className="text-2xl font-bold mb-4 text-center">
           Join as HR Manager
         </h2>
+
         <form onSubmit={handleSubmit(handleHrRegistration)}>
           {/* Full Name */}
           <div>
-            <label className="label-text font-semibold ">Full Name</label>
+            <label className="label-text font-semibold">Full Name</label>
             <input
               type="text"
               className="input input-bordered w-full my-2"
-              placeholder="Your Name"
               {...register("name", { required: "Full name is required" })}
             />
             {errors.name && (
               <p className="text-red-500 text-sm">{errors.name.message}</p>
             )}
           </div>
+
           {/* Company Name */}
           <div>
-            <label className="label-text font-semibold ">Company Name</label>
+            <label className="label-text font-semibold">Company Name</label>
             <input
               type="text"
               className="input input-bordered w-full my-2"
-              placeholder="Company Name"
               {...register("company", { required: "Company name is required" })}
             />
-            {errors.name && (
-              <p className="text-red-500 text-sm">{errors.name.message}</p>
+            {errors.company && (
+              <p className="text-red-500 text-sm">{errors.company.message}</p>
             )}
           </div>
-          {/* Company Logo URL */}
+
+          {/* Company Logo File Input */}
           <div>
-            <label className="label-text font-semibold">Company Logo URL</label>
+            <label className="label-text font-semibold">Company Logo</label>
             <input
-              type="text"
-              className="input input-bordered w-full my-2"
-              placeholder="Company Logo"
-              {...register("companyLogo", {
-                required: "Logo URL is required",
-              })}
+              type="file"
+              className="file-input input-bordered w-full my-2"
+              {...register("photo", { required: "Company logo is required" })}
             />
-            {errors.companyLogo && (
-              <p className="text-red-500 text-sm">
-                {errors.companyLogo.message}
-              </p>
+            {errors.photo && (
+              <p className="text-red-500 text-sm">{errors.photo.message}</p>
             )}
           </div>
+
           {/* Email */}
           <div>
             <label className="label-text font-semibold">Email</label>
             <input
               type="email"
               className="input input-bordered w-full my-2"
-              placeholder="E-mail"
               {...register("email", { required: "Email is required" })}
             />
             {errors.email && (
@@ -90,7 +148,6 @@ const HrRegister = () => {
             <input
               type="password"
               className="input input-bordered w-full my-2"
-              placeholder="Password"
               {...register("password", {
                 required: "Password is required",
                 minLength: {
@@ -104,7 +161,7 @@ const HrRegister = () => {
             )}
           </div>
 
-          {/* Date of Birth */}
+          {/* DOB */}
           <div>
             <label className="label-text font-semibold">Date of Birth</label>
             <input
@@ -121,17 +178,19 @@ const HrRegister = () => {
             )}
           </div>
 
-          <button type="submit" className="btn btn-primary w-full my-2">
-            Register as HR Manager
+          {/* Submit */}
+          <button
+            type="submit"
+            className="btn btn-primary w-full my-2"
+            disabled={loading}
+          >
+            {loading ? "Registering..." : "Register as HR Manager"}
           </button>
-          <p>
+
+          <p className="text-center">
             Already have an account?{" "}
-            <Link
-              state={location.state}
-              to="/login"
-              className="text-blue-400 underline"
-            >
-              login
+            <Link to="/login" className="text-blue-400 underline">
+              Login
             </Link>
           </p>
         </form>
