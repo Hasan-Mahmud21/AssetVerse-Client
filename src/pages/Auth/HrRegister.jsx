@@ -2,12 +2,14 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router";
 import useAuth from "../../hooks/useAuth";
+import useAxios from "../../hooks/useAxios";
 import axios from "axios";
 import { toast } from "react-toastify";
 
 const HrRegister = () => {
   const [loading, setLoading] = useState(false);
   const { registerUser, updateUserProfile } = useAuth();
+  const axiosPublic = useAxios(); // useAxios for public (unauthenticated) routes
   const navigate = useNavigate();
 
   const {
@@ -16,9 +18,8 @@ const HrRegister = () => {
     formState: { errors },
   } = useForm();
 
-  // --------------------------
   // Upload to ImgBB
-  // --------------------------
+
   const uploadImageToImgBB = async (imageFile) => {
     const formData = new FormData();
     formData.append("image", imageFile);
@@ -31,9 +32,8 @@ const HrRegister = () => {
     return response.data.data.url; // hosted image URL
   };
 
-  // --------------------------
   // HANDLE HR REGISTRATION
-  // --------------------------
+
   const handleHrRegistration = async (data) => {
     setLoading(true);
 
@@ -45,7 +45,7 @@ const HrRegister = () => {
       // 2. Create Firebase user
       const result = await registerUser(data.email, data.password);
       const firebaseUser = result.user;
-      console.log("firebaseUser", firebaseUser);
+      console.log(firebaseUser);
 
       // 3. Update Firebase displayName + photoURL
       await updateUserProfile({
@@ -53,27 +53,30 @@ const HrRegister = () => {
         photoURL: companyLogoURL,
       });
 
-      // ---------------------
-      // 4. Prepare HR data for backend (later)
-      // ---------------------
+      // 4. Prepare HR data for backend
       const hrUserData = {
         name: data.name,
         companyName: data.company,
         companyLogo: companyLogoURL,
         email: data.email,
         dateOfBirth: data.dateOfBirth,
-
-        // Auto-assigned values
         role: "hr",
         packageLimit: 5,
         currentEmployees: 0,
         subscription: "basic",
       };
 
-      console.log("Data to save in backend:", hrUserData);
+      // 5. Save to BACKEND DATABASE
+      const res = await axiosPublic.post("/users/hr", hrUserData);
 
-      toast.success("Registration Successful!");
-      navigate("/login");
+      if (res.data?.success) {
+        // Use NAVIGATE STATE so toast shows after redirect
+        navigate("/auth/login", {
+          state: { registered: true },
+        });
+      } else {
+        toast.error(res.data?.message || "Failed to save user in database");
+      }
     } catch (error) {
       console.log(error);
       toast.error(error.message || "Registration failed");
@@ -116,7 +119,7 @@ const HrRegister = () => {
             )}
           </div>
 
-          {/* Company Logo File Input */}
+          {/* Company Logo */}
           <div>
             <label className="label-text font-semibold">Company Logo</label>
             <input
@@ -161,7 +164,7 @@ const HrRegister = () => {
             )}
           </div>
 
-          {/* DOB */}
+          {/* Date of Birth */}
           <div>
             <label className="label-text font-semibold">Date of Birth</label>
             <input
@@ -189,7 +192,7 @@ const HrRegister = () => {
 
           <p className="text-center">
             Already have an account?{" "}
-            <Link to="/login" className="text-blue-400 underline">
+            <Link to="/auth/login" className="text-blue-400 underline">
               Login
             </Link>
           </p>

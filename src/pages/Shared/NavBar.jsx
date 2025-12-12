@@ -66,7 +66,7 @@ const NavBar = () => {
             Log Out
           </a>
         ) : (
-          <Link to="/login" className="btn">
+          <Link to="/auth/login" className="btn">
             Login
           </Link>
         )}
