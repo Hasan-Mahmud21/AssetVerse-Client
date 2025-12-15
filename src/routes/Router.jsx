@@ -18,6 +18,7 @@ import AddAsset from "../pages/Dashboards/Hr/AddAsset";
 import AssetList from "../pages/Dashboards/Hr/AssetList";
 import RequestAsset from "../pages/Dashboards/Employee/RequestAsset";
 import AllRequests from "../pages/Dashboards/Hr/AllRequests";
+import MyAssets from "../pages/Dashboards/Employee/MyAssets";
 
 export const router = createBrowserRouter([
   // PUBLIC PAGES
@@ -95,6 +96,8 @@ export const router = createBrowserRouter([
         path: "request-asset",
         element: <RequestAsset />,
       },
+      { path: "my-assets", 
+        element: <MyAssets /> },
     ],
   },
 
