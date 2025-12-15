@@ -3,7 +3,8 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router";
 import useAuth from "../../hooks/useAuth";
 
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
+
 import useAxios from "../../hooks/useAxios";
 
 const EmployeeRegister = () => {

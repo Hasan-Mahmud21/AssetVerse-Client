@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router";
 import useAuth from "../../hooks/useAuth";
 import useAxios from "../../hooks/useAxios";
 import axios from "axios";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 
 const HrRegister = () => {
   const [loading, setLoading] = useState(false);

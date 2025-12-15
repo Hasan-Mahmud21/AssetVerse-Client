@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { NavLink, Outlet } from "react-router";
+import { useState } from "react";
+import { NavLink, Outlet, useNavigate } from "react-router";
 import {
   FaBars,
   FaPlus,
@@ -15,14 +15,19 @@ import useAuth from "../hooks/useAuth";
 const HrDashboardLayout = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { user, logOutUser } = useAuth();
+  const navigate = useNavigate();
 
   const handleLogout = async () => {
     await logOutUser();
+    navigate("/auth/login");
   };
 
+  const navLinkClass = ({ isActive }) =>
+    isActive ? "bg-primary text-white font-semibold" : "hover:bg-base-200";
+
   return (
-    <div className="drawer drawer-mobile min-h-screen bg-base-200">
-      {/* Drawer Toggle Button (Mobile Only) */}
+    <div className="drawer lg:drawer-open min-h-screen bg-base-200">
+      {/* Drawer Toggle */}
       <input
         id="hr-dashboard-drawer"
         type="checkbox"
@@ -33,12 +38,11 @@ const HrDashboardLayout = () => {
 
       {/* MAIN CONTENT */}
       <div className="drawer-content flex flex-col">
-        {/* Topbar */}
+        {/* TOP BAR */}
         <div className="p-4 bg-base-100 shadow flex items-center justify-between">
-          {/* Mobile Sidebar Toggle */}
           <label
             htmlFor="hr-dashboard-drawer"
-            className="btn btn-ghost md:hidden"
+            className="btn btn-ghost lg:hidden"
             onClick={() => setIsOpen(!isOpen)}
           >
             <FaBars size={22} />
@@ -46,12 +50,11 @@ const HrDashboardLayout = () => {
 
           <h2 className="text-xl font-bold">HR Dashboard</h2>
 
-          {/* Profile Section */}
+          {/* Profile */}
           <div className="flex items-center gap-2">
             <span className="font-semibold hidden sm:block">
               {user?.displayName || "HR Manager"}
             </span>
-
             <img
               src={user?.photoURL || "https://i.ibb.co/0jYtM7B/user.png"}
               alt="User"
@@ -72,51 +75,55 @@ const HrDashboardLayout = () => {
           htmlFor="hr-dashboard-drawer"
           className="drawer-overlay"
           onClick={() => setIsOpen(false)}
-        ></label>
+        />
 
         <ul className="menu p-4 w-72 min-h-full bg-base-100 text-base-content shadow-xl">
           <h3 className="text-lg font-bold mb-3 text-primary">HR Navigation</h3>
 
           <li>
-            <NavLink to="/hr/dashboard">
-              <FaChartPie className="text-primary" /> Dashboard Overview
+            <NavLink to="/hr/dashboard" className={navLinkClass}>
+              <FaChartPie /> Dashboard
             </NavLink>
           </li>
 
           <li>
-            <NavLink to="/hr/add-asset">
-              <FaPlus className="text-primary" /> Add Asset
+            <NavLink to="/hr/add-asset" className={navLinkClass}>
+              <FaPlus /> Add Asset
             </NavLink>
           </li>
 
           <li>
-            <NavLink to="/hr/assets">
-              <FaListAlt className="text-primary" /> Asset List
+            <NavLink to="/hr/assets" className={navLinkClass}>
+              <FaListAlt /> Asset List
             </NavLink>
           </li>
 
           <li>
-            <NavLink to="/hr/requests">
-              <FaClipboardList className="text-primary" /> All Requests
+            <NavLink to="/hr/requests" className={navLinkClass}>
+              <FaClipboardList /> All Requests
             </NavLink>
           </li>
 
           <li>
-            <NavLink to="/hr/employees">
-              <FaUsers className="text-primary" /> Employee List
+            <NavLink to="/hr/employees" className={navLinkClass}>
+              <FaUsers /> Employees
             </NavLink>
           </li>
 
           <li>
-            <NavLink to="/hr/profile">
-              <FaUserCircle className="text-primary" /> Profile
+            <NavLink to="/hr/profile" className={navLinkClass}>
+              <FaUserCircle /> Profile
             </NavLink>
           </li>
 
-          <li onClick={handleLogout}>
-            <NavLink to="/auth/login">
-              <FaSignOutAlt className="text-red-500" /> Logout
-            </NavLink>
+          {/* LOGOUT */}
+          <li>
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-2 text-red-500 hover:bg-red-50 p-2 rounded"
+            >
+              <FaSignOutAlt /> Logout
+            </button>
           </li>
         </ul>
       </div>

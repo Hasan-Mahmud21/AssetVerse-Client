@@ -1,12 +1,16 @@
-import React from "react";
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import useAxiosSecure from "../../../hooks/useAxiosSecure";
+import useAxios from "../../../hooks/useAxios";
 import useAuth from "../../../hooks/useAuth";
+
 import toast from "react-hot-toast";
 
 const RequestAsset = () => {
-  const axiosSecure = useAxiosSecure();
+  const axiosSecure = useAxios();
   const { user } = useAuth();
+
+  const [selectedAsset, setSelectedAsset] = useState(null);
+  const [note, setNote] = useState("");
 
   // Fetch available assets
   const {
@@ -14,81 +18,104 @@ const RequestAsset = () => {
     isLoading,
     refetch,
   } = useQuery({
-    queryKey: ["available-assets"],
+    queryKey: ["availableAssets"],
     queryFn: async () => {
       const res = await axiosSecure.get("/assets/available");
       return res.data;
     },
   });
-  const handleRequest = async (asset) => {
+
+  const handleSubmitRequest = async () => {
+    if (!note.trim()) {
+      toast.error("Please add a note");
+      return;
+    }
+
     try {
-      const requestData = {
-        assetId: asset._id,
-        assetName: asset.assetName,
+      await axiosSecure.post("/asset-requests", {
+        assetId: selectedAsset._id,
+        assetName: selectedAsset.name,
         employeeEmail: user.email,
-        hrEmail: asset.hrEmail,
-      };
+        hrEmail: selectedAsset.hrEmail,
+        note, // 🔥 added note
+      });
 
-      const res = await axiosSecure.post("/asset-requests", requestData);
-
-      if (res.data.success) {
-        toast.success("Asset request sent!");
-        refetch(); // refresh asset list
-      }
+      toast.success("Asset request submitted!");
+      setSelectedAsset(null);
+      setNote("");
+      refetch();
     } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to request asset");
+      toast.error(error.response?.data?.message || "Request failed");
     }
   };
 
-  if (isLoading) {
-    return <div className="text-center mt-10">Loading assets...</div>;
-  }
+  if (isLoading) return <p>Loading assets...</p>;
 
   return (
-    <div className="bg-base-100 p-6 rounded-xl shadow">
-      <h2 className="text-2xl font-bold mb-4">Request Asset</h2>
+    <div>
+      <h2 className="text-2xl font-bold mb-6">Request an Asset</h2>
 
-      <div className="overflow-x-auto">
-        <table className="table table-zebra">
-          <thead>
-            <tr>
-              <th>Image</th>
-              <th>Name</th>
-              <th>Type</th>
-              <th>Available</th>
-              <th>Action</th>
-            </tr>
-          </thead>
+      {/* ASSET GRID */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {assets.map((asset) => (
+          <div key={asset._id} className="card bg-base-100 shadow">
+            <figure>
+              <img
+                src={asset.image}
+                alt={asset.name}
+                className="h-48 w-full object-cover"
+              />
+            </figure>
 
-          <tbody>
-            {assets.map((asset) => (
-              <tr key={asset._id}>
-                <td>
-                  <img
-                    src={asset.image}
-                    alt={asset.assetName}
-                    className="w-12 h-12 rounded"
-                  />
-                </td>
+            <div className="card-body">
+              <h3 className="card-title">{asset.name}</h3>
+              <p>Type: {asset.type}</p>
+              <p>Available: {asset.quantity}</p>
 
-                <td>{asset.assetName}</td>
-                <td>{asset.assetType}</td>
-                <td>{asset.quantity}</td>
-
-                {/* 🔥 ACTION BUTTON GOES HERE */}
-                <td>
-                  <button
-                    onClick={() => handleRequest(asset)}
-                    className="btn btn-xs btn-primary"
-                  >
-                    Request
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+              <div className="card-actions justify-end">
+                <button
+                  className="btn btn-primary btn-sm"
+                  onClick={() => setSelectedAsset(asset)}
+                >
+                  Request
+                </button>
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
+
+      {/* REQUEST MODAL */}
+      {selectedAsset && (
+        <dialog open className="modal">
+          <div className="modal-box">
+            <h3 className="font-bold text-lg">Request: {selectedAsset.name}</h3>
+
+            <textarea
+              className="textarea textarea-bordered w-full mt-4"
+              placeholder="Add a note (why do you need this asset?)"
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+            />
+
+            <div className="modal-action">
+              <button
+                className="btn btn-outline"
+                onClick={() => {
+                  setSelectedAsset(null);
+                  setNote("");
+                }}
+              >
+                Cancel
+              </button>
+
+              <button className="btn btn-primary" onClick={handleSubmitRequest}>
+                Submit Request
+              </button>
+            </div>
+          </div>
+        </dialog>
+      )}
     </div>
   );
 };

@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { NavLink, Outlet } from "react-router";
+import { useState } from "react";
+import { NavLink, Outlet, useNavigate } from "react-router";
 import {
   FaBars,
   FaLaptop,
@@ -10,18 +10,22 @@ import {
 } from "react-icons/fa";
 import useAuth from "../hooks/useAuth";
 
-
 const EmployeeDashboardLayout = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { user, logOutUser } = useAuth();
+  const navigate = useNavigate();
 
   const handleLogout = async () => {
     await logOutUser();
+    navigate("/auth/login");
   };
 
+  const navClass = ({ isActive }) =>
+    isActive ? "bg-primary text-white font-semibold" : "hover:bg-base-200";
+
   return (
-    <div className="drawer drawer-mobile min-h-screen bg-base-200">
-      {/* Drawer Toggle for Small Screens */}
+    <div className="drawer lg:drawer-open min-h-screen bg-base-200">
+      {/* Drawer Toggle */}
       <input
         id="employee-dashboard-drawer"
         type="checkbox"
@@ -34,10 +38,9 @@ const EmployeeDashboardLayout = () => {
       <div className="drawer-content flex flex-col">
         {/* Top Bar */}
         <div className="p-4 bg-base-100 shadow flex items-center justify-between">
-          {/* Mobile Nav Toggle */}
           <label
             htmlFor="employee-dashboard-drawer"
-            className="btn btn-ghost md:hidden"
+            className="btn btn-ghost lg:hidden"
             onClick={() => setIsOpen(!isOpen)}
           >
             <FaBars size={22} />
@@ -45,12 +48,10 @@ const EmployeeDashboardLayout = () => {
 
           <h2 className="text-xl font-bold">Employee Dashboard</h2>
 
-          {/* User Profile */}
           <div className="flex items-center gap-2">
             <span className="font-semibold hidden sm:block">
               {user?.displayName || "Employee"}
             </span>
-
             <img
               src={user?.photoURL || "https://i.ibb.co/0jYtM7B/user.png"}
               alt="User"
@@ -59,19 +60,19 @@ const EmployeeDashboardLayout = () => {
           </div>
         </div>
 
-        {/* DYNAMIC PAGE CONTENT */}
+        {/* PAGE CONTENT */}
         <div className="p-6">
           <Outlet />
         </div>
       </div>
 
-      {/* SIDEBAR NAVIGATION */}
+      {/* SIDEBAR */}
       <div className="drawer-side">
         <label
           htmlFor="employee-dashboard-drawer"
           className="drawer-overlay"
           onClick={() => setIsOpen(false)}
-        ></label>
+        />
 
         <ul className="menu p-4 w-72 min-h-full bg-base-100 text-base-content shadow-xl">
           <h3 className="text-lg font-bold mb-3 text-primary">
@@ -79,33 +80,42 @@ const EmployeeDashboardLayout = () => {
           </h3>
 
           <li>
-            <NavLink to="/employee/dashboard">
-              <FaLaptop className="text-primary" /> My Assets
+            <NavLink to="/employee/dashboard" className={navClass}>
+              <FaLaptop /> Dashboard
             </NavLink>
           </li>
 
           <li>
-            <NavLink to="/employee/team">
-              <FaUsers className="text-primary" /> My Team
+            <NavLink to="/employee/my-assets" className={navClass}>
+              <FaLaptop /> My Assets
             </NavLink>
           </li>
 
           <li>
-            <NavLink to="/employee/request-asset">
-              <FaClipboardCheck className="text-primary" /> Request Asset
+            <NavLink to="/employee/my-team" className={navClass}>
+              <FaUsers /> My Team
             </NavLink>
           </li>
 
           <li>
-            <NavLink to="/employee/profile">
-              <FaUserCircle className="text-primary" /> Profile
+            <NavLink to="/employee/request-asset" className={navClass}>
+              <FaClipboardCheck /> Request Asset
             </NavLink>
           </li>
 
-          <li onClick={handleLogout}>
-            <NavLink to="/auth/login">
-              <FaSignOutAlt className="text-red-500" /> Logout
+          <li>
+            <NavLink to="/employee/profile" className={navClass}>
+              <FaUserCircle /> Profile
             </NavLink>
+          </li>
+
+          <li>
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-2 text-red-500 hover:bg-red-50 p-2 rounded"
+            >
+              <FaSignOutAlt /> Logout
+            </button>
           </li>
         </ul>
       </div>

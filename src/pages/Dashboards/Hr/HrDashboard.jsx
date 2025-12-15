@@ -1,7 +1,17 @@
-import { Link } from "react-router";
+import { Link, useLocation } from "react-router";
+import { useEffect } from "react";
+import toast from "react-hot-toast";
 import { FaBox, FaClipboardList, FaUsers, FaPlus } from "react-icons/fa";
 
 const HrDashboard = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.state?.loggedIn) {
+      toast.success("Login Successful!");
+    }
+  }, [location.state]);
+
   return (
     <div>
       <h1 className="text-3xl font-bold mb-6">HR Dashboard</h1>

@@ -19,6 +19,7 @@ import AssetList from "../pages/Dashboards/Hr/AssetList";
 import RequestAsset from "../pages/Dashboards/Employee/RequestAsset";
 import AllRequests from "../pages/Dashboards/Hr/AllRequests";
 import MyAssets from "../pages/Dashboards/Employee/MyAssets";
+import EmployeeList from "../pages/Dashboards/Hr/EmployeeList";
 
 export const router = createBrowserRouter([
   // PUBLIC PAGES
@@ -76,6 +77,9 @@ export const router = createBrowserRouter([
         path: "requests",
         element: <AllRequests />,
       },
+      { path: "employees", 
+        element: <EmployeeList /> 
+      },
     ],
   },
 
@@ -96,8 +100,7 @@ export const router = createBrowserRouter([
         path: "request-asset",
         element: <RequestAsset />,
       },
-      { path: "my-assets", 
-        element: <MyAssets /> },
+      { path: "my-assets", element: <MyAssets /> },
     ],
   },
 
