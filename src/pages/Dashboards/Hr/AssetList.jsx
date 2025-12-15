@@ -9,7 +9,7 @@ const AssetList = () => {
   const axiosSecure = useAxiosSecure();
   const [search, setSearch] = useState("");
 
-  // Fetch assets using TanStack Query
+  // Fetch assets 
   const {
     data: assets = [],
     isLoading,
@@ -35,7 +35,7 @@ const AssetList = () => {
       const res = await axiosSecure.delete(`/assets/${id}`);
       if (res.data.success) {
         toast.success("Asset deleted");
-        refetch(); // 🔥 auto refresh list
+        refetch();
       }
     } catch (error) {
       console.log(error);

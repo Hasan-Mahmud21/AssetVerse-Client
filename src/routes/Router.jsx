@@ -16,6 +16,7 @@ import EmployeeDashboardLayout from "../layouts/EmployeeDashboardLayout";
 import EmployeeDashboard from "../pages/Dashboards/Employee/EmployeeDashboard";
 import AddAsset from "../pages/Dashboards/Hr/AddAsset";
 import AssetList from "../pages/Dashboards/Hr/AssetList";
+import RequestAsset from "../pages/Dashboards/Employee/RequestAsset";
 
 export const router = createBrowserRouter([
   // PUBLIC PAGES
@@ -82,7 +83,14 @@ export const router = createBrowserRouter([
         </EmployeeRoute>
       </PrivateRoute>
     ),
-    children: [{ path: "dashboard", element: <EmployeeDashboard /> }],
+    children: [
+      { index: true, element: <Navigate to="dashboard" replace /> },
+      { path: "dashboard", element: <EmployeeDashboard /> },
+      {
+        path: "request-asset",
+        element: <RequestAsset />,
+      },
+    ],
   },
 
   // UNAUTHORIZED PAGE
