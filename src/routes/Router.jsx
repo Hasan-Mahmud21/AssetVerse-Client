@@ -17,6 +17,7 @@ import EmployeeDashboard from "../pages/Dashboards/Employee/EmployeeDashboard";
 import AddAsset from "../pages/Dashboards/Hr/AddAsset";
 import AssetList from "../pages/Dashboards/Hr/AssetList";
 import RequestAsset from "../pages/Dashboards/Employee/RequestAsset";
+import AllRequests from "../pages/Dashboards/Hr/AllRequests";
 
 export const router = createBrowserRouter([
   // PUBLIC PAGES
@@ -69,6 +70,10 @@ export const router = createBrowserRouter([
       {
         path: "assets",
         element: <AssetList />,
+      },
+      {
+        path: "requests",
+        element: <AllRequests />,
       },
     ],
   },
