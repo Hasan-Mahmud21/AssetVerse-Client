@@ -37,7 +37,7 @@ const RequestAsset = () => {
         assetName: selectedAsset.name,
         employeeEmail: user.email,
         hrEmail: selectedAsset.hrEmail,
-        note, // 🔥 added note
+        note, // note
       });
 
       toast.success("Asset request submitted!");
