@@ -34,10 +34,8 @@ const RequestAsset = () => {
     try {
       await axiosSecure.post("/asset-requests", {
         assetId: selectedAsset._id,
-        assetName: selectedAsset.name,
         employeeEmail: user.email,
-        hrEmail: selectedAsset.hrEmail,
-        note, // note
+        note,
       });
 
       toast.success("Asset request submitted!");

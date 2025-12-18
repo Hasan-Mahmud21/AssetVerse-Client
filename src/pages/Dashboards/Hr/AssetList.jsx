@@ -9,7 +9,7 @@ const AssetList = () => {
   const axiosSecure = useAxiosSecure();
   const [search, setSearch] = useState("");
 
-  // Fetch assets 
+  // Fetch assets
   const {
     data: assets = [],
     isLoading,
@@ -45,11 +45,14 @@ const AssetList = () => {
   };
 
   // Client-side search
-  const filteredAssets = assets.filter(
-    (asset) =>
-      asset.assetName.toLowerCase().includes(search.toLowerCase()) ||
-      asset.assetType.toLowerCase().includes(search.toLowerCase())
-  );
+  const filteredAssets = assets.filter((asset) => {
+    const name = asset.assetName?.toLowerCase() || "";
+    const type = asset.assetType?.toLowerCase() || "";
+
+    return (
+      name.includes(search.toLowerCase()) || type.includes(search.toLowerCase())
+    );
+  });
 
   if (isLoading) {
     return <div className="text-center mt-10">Loading assets...</div>;
