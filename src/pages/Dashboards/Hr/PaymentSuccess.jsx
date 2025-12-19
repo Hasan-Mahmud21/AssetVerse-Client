@@ -1,33 +1,29 @@
 import { useEffect } from "react";
-import { useSearchParams, useNavigate } from "react-router";
-import useAxios from "../../../hooks/useAxios";
+import { useSearchParams } from "react-router";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
+import useAuth from "../../../hooks/useAuth";
 import toast from "react-hot-toast";
 
 const PaymentSuccess = () => {
   const [params] = useSearchParams();
-  const navigate = useNavigate();
-  const axiosPublic = useAxios();
-
   const plan = params.get("plan");
+  const axiosSecure = useAxiosSecure();
+  const { user } = useAuth();
 
   useEffect(() => {
-    if (!plan) return;
-
-    axiosPublic
-      .patch("/users/upgrade-package", { plan })
-      .then(() => {
-        toast.success("Package upgraded successfully!");
-        navigate("/hr/dashboard");
-      })
-      .catch(() => {
-        toast.error("Package upgrade failed");
-        navigate("/hr/dashboard");
+    if (user?.email && plan) {
+      axiosSecure.patch("/payment-success", {
+        email: user.email,
+        plan,
       });
-  }, [plan, axiosPublic, navigate]);
+      toast.success("Package upgraded successfully");
+    }
+  }, [user, plan]);
 
   return (
-    <div className="flex items-center justify-center h-screen">
-      <h2 className="text-xl font-semibold">Processing your payment...</h2>
+    <div className="text-center mt-20">
+      <h2 className="text-3xl font-bold">Payment Successful 🎉</h2>
+      <p className="mt-4">Your subscription has been updated.</p>
     </div>
   );
 };

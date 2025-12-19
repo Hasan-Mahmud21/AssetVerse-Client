@@ -23,6 +23,7 @@ import EmployeeList from "../pages/Dashboards/Hr/EmployeeList";
 import UpgradePackage from "../pages/Dashboards/Hr/UpgradePackage";
 import PaymentSuccess from "../pages/Dashboards/Hr/PaymentSuccess";
 import MyTeam from "../pages/Dashboards/Employee/MyTeam";
+import EmployeeProfile from "../pages/Dashboards/Employee/EmployeeProfile";
 
 export const router = createBrowserRouter([
   // PUBLIC PAGES
@@ -107,6 +108,7 @@ export const router = createBrowserRouter([
       },
       { path: "my-assets", element: <MyAssets /> },
       { path: "my-team", element: <MyTeam /> },
+      { path: "profile", element: <EmployeeProfile /> },
     ],
   },
   {
