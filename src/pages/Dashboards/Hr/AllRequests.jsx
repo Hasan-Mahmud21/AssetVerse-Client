@@ -1,10 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
-import useAxios from "../../../hooks/useAxios";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import useAuth from "../../../hooks/useAuth";
 import toast from "react-hot-toast";
 
 const AllRequests = () => {
-  const axiosPublic = useAxios();
+  const axiosSecure = useAxiosSecure(); 
   const { user } = useAuth();
 
   const {
@@ -15,14 +15,14 @@ const AllRequests = () => {
     queryKey: ["assetRequests", user?.email],
     enabled: !!user?.email,
     queryFn: async () => {
-      const res = await axiosPublic.get(`/asset-requests/hr/${user.email}`);
+      const res = await axiosSecure.get(`/asset-requests/hr/${user.email}`);
       return res.data;
     },
   });
 
   const handleApprove = async (id) => {
     try {
-      await axiosPublic.patch(`/asset-requests/approve/${id}`);
+      await axiosSecure.patch(`/asset-requests/approve/${id}`);
       toast.success("Request approved");
       refetch();
     } catch (error) {
@@ -32,11 +32,11 @@ const AllRequests = () => {
 
   const handleReject = async (id) => {
     try {
-      await axiosPublic.patch(`/asset-requests/reject/${id}`);
+      await axiosSecure.patch(`/asset-requests/reject/${id}`);
       toast.success("Request rejected");
       refetch();
-    } catch {
-      toast.error("Rejection failed");
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Rejection failed");
     }
   };
 
@@ -60,7 +60,7 @@ const AllRequests = () => {
                 <th>Type</th>
                 <th>Company</th>
                 <th>Note</th>
-                <th>Requested On</th>
+                <th>Date</th>
                 <th>Status</th>
                 <th className="text-center">Action</th>
               </tr>
@@ -70,13 +70,12 @@ const AllRequests = () => {
               {requests.map((req) => (
                 <tr key={req._id}>
                   <td>{req.employeeEmail}</td>
-                  <td className="font-semibold">{req.assetName || "N/A"}</td>
-                  <td className="capitalize">{req.assetType}</td>
+                  <td className="font-semibold">{req.assetName}</td>
+                  <td>{req.assetType}</td>
                   <td>{req.companyName}</td>
                   <td className="max-w-xs truncate">{req.note}</td>
                   <td>{new Date(req.requestDate).toLocaleDateString()}</td>
 
-                  {/* STATUS */}
                   <td>
                     <span
                       className={`badge ${
@@ -91,7 +90,6 @@ const AllRequests = () => {
                     </span>
                   </td>
 
-                  {/* ACTION */}
                   <td className="text-center">
                     {req.status === "pending" ? (
                       <div className="flex gap-2 justify-center">
@@ -109,7 +107,7 @@ const AllRequests = () => {
                         </button>
                       </div>
                     ) : (
-                      <span className="text-gray-400 text-sm">—</span>
+                      <span className="text-gray-400">—</span>
                     )}
                   </td>
                 </tr>

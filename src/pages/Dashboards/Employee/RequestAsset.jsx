@@ -1,18 +1,17 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import useAxios from "../../../hooks/useAxios";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import useAuth from "../../../hooks/useAuth";
-
 import toast from "react-hot-toast";
 
 const RequestAsset = () => {
-  const axiosSecure = useAxios();
+  const axiosSecure = useAxiosSecure();
   const { user } = useAuth();
 
   const [selectedAsset, setSelectedAsset] = useState(null);
   const [note, setNote] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
-  // Fetch available assets
   const {
     data: assets = [],
     isLoading,
@@ -32,66 +31,81 @@ const RequestAsset = () => {
     }
 
     try {
+      setSubmitting(true);
+
       await axiosSecure.post("/asset-requests", {
         assetId: selectedAsset._id,
         employeeEmail: user.email,
         note,
       });
 
-      toast.success("Asset request submitted!");
+      toast.success("Asset request submitted successfully");
       setSelectedAsset(null);
       setNote("");
       refetch();
     } catch (error) {
       toast.error(error.response?.data?.message || "Request failed");
+    } finally {
+      setSubmitting(false);
     }
   };
 
-  if (isLoading) return <p>Loading assets...</p>;
+  if (isLoading) {
+    return <p className="text-center mt-10">Loading assets...</p>;
+  }
 
   return (
-    <div>
+    <div className="bg-base-100 p-6 rounded-xl shadow">
       <h2 className="text-2xl font-bold mb-6">Request an Asset</h2>
 
-      {/* ASSET GRID */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {assets.map((asset) => (
-          <div key={asset._id} className="card bg-base-100 shadow">
-            <figure>
-              <img
-                src={asset.image}
-                alt={asset.name}
-                className="h-48 w-full object-cover"
-              />
-            </figure>
+      {assets.length === 0 ? (
+        <p className="text-gray-500">No assets available right now.</p>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {assets.map((asset) => (
+            <div key={asset._id} className="card bg-base-100 shadow">
+              <figure>
+                <img
+                  src={asset.image}
+                  alt={asset.assetName}
+                  className="h-48 w-full object-cover"
+                />
+              </figure>
 
-            <div className="card-body">
-              <h3 className="card-title">{asset.name}</h3>
-              <p>Type: {asset.type}</p>
-              <p>Available: {asset.quantity}</p>
+              <div className="card-body">
+                <h3 className="card-title">{asset.assetName}</h3>
+                <p>
+                  <strong>Type:</strong> {asset.assetType}
+                </p>
+                <p>
+                  <strong>Available:</strong> {asset.quantity}
+                </p>
 
-              <div className="card-actions justify-end">
-                <button
-                  className="btn btn-primary btn-sm"
-                  onClick={() => setSelectedAsset(asset)}
-                >
-                  Request
-                </button>
+                <div className="card-actions justify-end">
+                  <button
+                    className="btn btn-primary btn-sm"
+                    onClick={() => setSelectedAsset(asset)}
+                    disabled={asset.quantity <= 0}
+                  >
+                    Request
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
 
-      {/* REQUEST MODAL */}
       {selectedAsset && (
         <dialog open className="modal">
           <div className="modal-box">
-            <h3 className="font-bold text-lg">Request: {selectedAsset.name}</h3>
+            <h3 className="font-bold text-lg">
+              Request: {selectedAsset.assetName}
+            </h3>
 
             <textarea
               className="textarea textarea-bordered w-full mt-4"
-              placeholder="Add a note (why do you need this asset?)"
+              placeholder="Add a note"
               value={note}
               onChange={(e) => setNote(e.target.value)}
             />
@@ -103,12 +117,17 @@ const RequestAsset = () => {
                   setSelectedAsset(null);
                   setNote("");
                 }}
+                disabled={submitting}
               >
                 Cancel
               </button>
 
-              <button className="btn btn-primary" onClick={handleSubmitRequest}>
-                Submit Request
+              <button
+                className="btn btn-primary"
+                onClick={handleSubmitRequest}
+                disabled={submitting}
+              >
+                {submitting ? "Submitting..." : "Submit Request"}
               </button>
             </div>
           </div>
