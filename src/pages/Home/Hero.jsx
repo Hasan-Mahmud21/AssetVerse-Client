@@ -3,114 +3,161 @@ import { Link } from "react-router";
 
 const Hero = () => {
   return (
-    <section className="bg-linear-to-br from-sky-50 via-blue-50 to-white">
-      <div className="max-w-7xl mx-auto px-4 py-16 md:py-24 grid lg:grid-cols-2 gap-10 items-center">
-        {/* Left */}
+    <section className="relative overflow-hidden bg-linear-to-br from-sky-50 via-blue-50 to-white">
+      {/* Background Glows */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full z-0 opacity-40">
+        <div className="absolute top-[-5%] left-[-5%] w-[35%] h-[35%] rounded-full bg-blue-200 blur-[120px]" />
+        <div className="absolute bottom-[-5%] right-[-5%] w-[25%] h-[25%] rounded-full bg-sky-200 blur-[100px]" />
+      </div>
+
+      <div className="relative z-10 max-w-7xl mx-auto px-4 py-20 md:py-32 grid lg:grid-cols-2 gap-16 items-center">
+        {/* Left Side: Content */}
         <motion.div
-          initial={{ opacity: 0, y: 18 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
+          initial={{ opacity: 0, x: -30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
         >
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/70 border border-blue-100 text-xs font-semibold text-blue-700">
-            CORPORATE ASSET MANAGEMENT
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-600/10 border border-blue-200 text-[11px] font-bold tracking-widest text-blue-700 uppercase mb-8">
+            Enterprise-Grade Inventory
           </div>
 
-          <h1 className="mt-4 text-4xl md:text-5xl font-extrabold leading-tight text-slate-900">
-            Track every asset. <br className="hidden md:block" />
-            Empower every employee.
+          <h1 className="text-5xl md:text-7xl font-black tracking-tight text-slate-900 leading-[1.1]">
+            Your Assets. <br />
+            <span className="text-transparent bg-clip-text bg-linear-to-r from-blue-600 to-sky-500">
+              Perfectly Synced.
+            </span>
           </h1>
 
-          <p className="mt-4 text-base md:text-lg text-slate-600 max-w-xl">
-            AssetVerse helps HR teams control laptops, devices, and office
-            equipment in one secure platform—clear visibility, approvals, and
-            accountability.
+          <p className="mt-6 text-lg md:text-xl text-slate-600 max-w-xl leading-relaxed">
+            Eliminate the chaos of spreadsheets. AssetVerse provides HR teams
+            with a unified dashboard to track, assign, and recover company
+            equipment—securely and effortlessly.
           </p>
 
-          <div className="mt-6 flex flex-wrap gap-3">
-            <Link to="/auth/hr-register" className="btn btn-primary">
-              Join as HR Manager
+          <div className="mt-10 flex flex-wrap gap-4 items-center">
+            {/* HR Manager Action */}
+            <Link
+              to="/auth/hr-register"
+              className="btn btn-primary btn-lg shadow-xl shadow-blue-200/50 px-8 hover:scale-105 transition-all"
+            >
+              Register Company
             </Link>
-            <Link to="/auth/emp-register" className="btn btn-outline">
-              Join as Employee
+
+            {/* Employee Action */}
+            <Link
+              to="/auth/emp-register"
+              className="btn btn-outline btn-lg px-8 border-slate-200 hover:bg-blue-50 text-slate-700"
+            >
+              Claim Your Gear
             </Link>
-            <Link to="/auth/login" className="btn btn-ghost">
-              Login
+
+            {/* Login Button Kept */}
+            <Link
+              to="/auth/login"
+              className="btn btn-ghost btn-lg text-blue-600 hover:bg-blue-50/50"
+            >
+              Sign In
             </Link>
           </div>
 
-          <div className="mt-8 grid grid-cols-2 sm:grid-cols-3 gap-4">
-            <div className="p-4 rounded-2xl bg-white/70 border border-blue-100">
-              <p className="text-sm text-slate-500">Adoption</p>
-              <p className="text-lg font-bold text-slate-900">100+ companies</p>
+          <div className="mt-12 flex items-center gap-6">
+            <div className="flex -space-x-3">
+              {[1, 2, 3, 4].map((i) => (
+                <div
+                  key={i}
+                  className="h-10 w-10 rounded-full border-2 border-white bg-slate-200 overflow-hidden"
+                >
+                  <img
+                    src={`https://i.pravatar.cc/100?img=${i + 10}`}
+                    alt="user"
+                  />
+                </div>
+              ))}
             </div>
-            <div className="p-4 rounded-2xl bg-white/70 border border-blue-100">
-              <p className="text-sm text-slate-500">Tracking</p>
-              <p className="text-lg font-bold text-slate-900">Real-time</p>
-            </div>
-            <div className="p-4 rounded-2xl bg-white/70 border border-blue-100">
-              <p className="text-sm text-slate-500">Security</p>
-              <p className="text-lg font-bold text-slate-900">Role-based</p>
-            </div>
+            <p className="text-sm text-slate-500 font-medium">
+              Trusted by <span className="text-slate-900 font-bold">500+</span>{" "}
+              HR Managers worldwide
+            </p>
           </div>
         </motion.div>
 
-        {/* Right (Mock card) */}
+        {/* Right Side: Visual Dashboard */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.97 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.6, ease: "easeOut", delay: 0.05 }}
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
           className="relative"
         >
-          <div className="p-6 md:p-8 rounded-3xl bg-white shadow-xl border border-blue-100">
-            <div className="flex items-center justify-between">
-              <h3 className="font-bold text-slate-900">Live asset overview</h3>
-              <span className="badge badge-primary badge-outline">
-                Q1 Snapshot
-              </span>
-            </div>
+          <div className="relative z-10 p-2 rounded-[3rem] bg-white/40 backdrop-blur-md border border-white/60 shadow-2xl">
+            <div className="bg-white rounded-[2.5rem] overflow-hidden shadow-inner">
+              {/* Header of Mock UI */}
+              <div className="bg-slate-50 border-b border-slate-100 p-6 flex justify-between items-center">
+                <span className="text-sm font-bold text-slate-800">
+                  Operational Overview
+                </span>
+                <div className="flex gap-1.5">
+                  <div className="h-2 w-2 rounded-full bg-slate-200" />
+                  <div className="h-2 w-2 rounded-full bg-slate-200" />
+                  <div className="h-2 w-2 rounded-full bg-slate-200" />
+                </div>
+              </div>
 
-            <p className="text-sm text-slate-500 mt-1">
-              Assigned, available, and returnable assets at a glance.
-            </p>
+              <div className="p-8">
+                <div className="grid grid-cols-2 gap-4 mb-8">
+                  <div className="bg-blue-600 rounded-2xl p-5 text-white shadow-lg shadow-blue-200">
+                    <p className="text-[10px] uppercase font-bold opacity-80 tracking-widest">
+                      In Use
+                    </p>
+                    <p className="text-3xl font-black mt-1">88%</p>
+                  </div>
+                  <div className="bg-slate-900 rounded-2xl p-5 text-white">
+                    <p className="text-[10px] uppercase font-bold opacity-80 tracking-widest">
+                      Pending
+                    </p>
+                    <p className="text-3xl font-black mt-1">12</p>
+                  </div>
+                </div>
 
-            <div className="mt-6 grid grid-cols-3 gap-3">
-              <div className="rounded-2xl p-4 bg-slate-50 border">
-                <p className="text-xs text-slate-500">Active</p>
-                <p className="text-xl font-extrabold text-slate-900">320</p>
-              </div>
-              <div className="rounded-2xl p-4 bg-emerald-50 border border-emerald-100">
-                <p className="text-xs text-emerald-700">Assigned</p>
-                <p className="text-xl font-extrabold text-slate-900">245</p>
-              </div>
-              <div className="rounded-2xl p-4 bg-amber-50 border border-amber-100">
-                <p className="text-xs text-amber-700">Returnable</p>
-                <p className="text-xl font-extrabold text-slate-900">75</p>
-              </div>
-            </div>
-
-            <div className="mt-6 space-y-3">
-              <div className="p-4 rounded-2xl bg-slate-50 border">
-                <p className="text-xs font-semibold text-slate-600">SECURITY</p>
-                <p className="text-sm text-slate-600">
-                  Role-based access for HR and employees with audit-ready
-                  actions.
-                </p>
-              </div>
-              <div className="p-4 rounded-2xl bg-slate-50 border">
-                <p className="text-xs font-semibold text-slate-600">
-                  AUTOMATION
-                </p>
-                <p className="text-sm text-slate-600">
-                  Approvals, limits, and tracking designed for HR workflows.
-                </p>
+                <div className="space-y-4">
+                  {[
+                    {
+                      name: "MacBook Pro M3",
+                      status: "Assigned",
+                      color: "text-emerald-600",
+                    },
+                    {
+                      name: 'Dell UltraSharp 27"',
+                      status: "In Review",
+                      color: "text-amber-600",
+                    },
+                    {
+                      name: "Magic Keyboard",
+                      status: "Returned",
+                      color: "text-blue-600",
+                    },
+                  ].map((item, i) => (
+                    <div
+                      key={i}
+                      className="flex items-center justify-between p-4 rounded-xl border border-slate-100 bg-slate-50/50"
+                    >
+                      <span className="text-sm font-semibold text-slate-700">
+                        {item.name}
+                      </span>
+                      <span
+                        className={`text-[10px] font-black uppercase tracking-tighter ${item.color}`}
+                      >
+                        {item.status}
+                      </span>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
 
-          {/* subtle floating glow */}
-          <div className="absolute -z-10 inset-0 blur-3xl opacity-40 bg-gradient-to-br from-blue-200 to-sky-200" />
+          {/* Decorative Elements */}
+          <div className="absolute -top-6 -right-6 h-24 w-24 bg-blue-100 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse" />
+          <div className="absolute -bottom-8 -left-8 h-32 w-32 bg-sky-100 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse delay-700" />
         </motion.div>
       </div>
     </section>
