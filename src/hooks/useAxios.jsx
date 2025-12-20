@@ -4,7 +4,7 @@ import { useMemo } from "react";
 const useAxios = () => {
   const axiosPublic = useMemo(() => {
     return axios.create({
-      baseURL: "http://localhost:3000",
+      baseURL: "https://asset-verse-server-omega.vercel.app",
     });
   }, []);
 

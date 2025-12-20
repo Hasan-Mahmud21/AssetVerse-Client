@@ -35,21 +35,22 @@ const AddAsset = () => {
     setLoading(true);
 
     try {
-      // 1. Upload Image
+      // 1️⃣ Upload Image
       const imageFile = data.image[0];
       const imageUrl = await uploadImageToImgBB(imageFile);
 
-      // 2. Prepare Asset Data
+      // 2️⃣ Prepare Asset Data
       const assetData = {
         assetName: data.assetName,
         assetType: data.assetType,
+        returnable: data.returnable === "true", // 🔥 NEW
         quantity: Number(data.quantity),
         image: imageUrl,
         description: data.description,
         hrEmail: user.email,
       };
 
-      // 3. Save to backend
+      // 3️⃣ Save to backend
       const res = await axiosSecure.post("/assets", assetData);
 
       if (res.data.success) {
@@ -68,7 +69,7 @@ const AddAsset = () => {
 
   return (
     <div className="max-w-2xl mx-auto bg-base-100 p-6 rounded-xl shadow">
-      <h2 className="text-2xl font-bold mb-4">Add New Asset</h2>
+      <h2 className="text-2xl font-bold mb-6">Add New Asset</h2>
 
       <form onSubmit={handleSubmit(handleAddAsset)} className="space-y-4">
         {/* Asset Name */}
@@ -100,6 +101,19 @@ const AddAsset = () => {
           </select>
         </div>
 
+        {/* 🔥 NEW: Returnable */}
+        <div>
+          <label className="font-semibold">Return Policy</label>
+          <select
+            className="select select-bordered w-full"
+            {...register("returnable", { required: true })}
+          >
+            <option value="">Select return policy</option>
+            <option value="true">Returnable</option>
+            <option value="false">Non-returnable</option>
+          </select>
+        </div>
+
         {/* Quantity */}
         <div>
           <label className="font-semibold">Quantity</label>
@@ -126,7 +140,7 @@ const AddAsset = () => {
           <textarea
             className="textarea textarea-bordered w-full"
             {...register("description")}
-          ></textarea>
+          />
         </div>
 
         {/* Submit */}
