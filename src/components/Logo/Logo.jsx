@@ -1,10 +1,13 @@
 import React from "react";
 
-const Logo = () => {
+// Added variant prop to handle different backgrounds
+const Logo = ({ variant = "default" }) => {
+  const isDarkBg = variant === "light";
+
   return (
     <div className="flex items-center gap-2 select-none group cursor-pointer">
       <div className="relative flex items-center justify-center">
-        <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-200 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
+        <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-200 group-hover:scale-110 transition-all duration-300">
           <svg
             viewBox="0 0 24 24"
             fill="none"
@@ -25,7 +28,6 @@ const Logo = () => {
               strokeLinecap="round"
               strokeLinejoin="round"
             />
-
             <circle
               cx="12"
               cy="12"
@@ -35,17 +37,22 @@ const Logo = () => {
             />
           </svg>
         </div>
-
-        {/* Subtle background glow */}
-        <div className="absolute inset-0 bg-blue-400 blur-xl opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
       </div>
 
-      {/* Brand Name */}
       <div className="flex flex-col">
-        <span className="text-xl font-black leading-tight tracking-tighter text-slate-900">
-          Asset<span className="text-blue-600">Verse</span>
+        {/* Change text-slate-900 to text-white if variant is light */}
+        <span
+          className={`text-xl font-black leading-tight tracking-tighter ${
+            isDarkBg ? "text-white" : "text-slate-900"
+          }`}
+        >
+          Asset<span className="text-blue-500">Verse</span>
         </span>
-        <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 -mt-0.5">
+        <span
+          className={`text-[10px] font-bold uppercase tracking-[0.2em] ${
+            isDarkBg ? "text-slate-400" : "text-slate-400"
+          }`}
+        >
           Inventory Cloud
         </span>
       </div>

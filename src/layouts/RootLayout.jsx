@@ -2,6 +2,7 @@ import React from "react";
 import { Outlet } from "react-router";
 import NavBar from "../pages/Shared/NavBar";
 import Footer from "../pages/Shared/Footer";
+import ScrollToTop from "../components/ScrollToTop";
 
 const RootLayout = () => {
   return (
@@ -19,6 +20,9 @@ const RootLayout = () => {
       <footer className="w-full bg-base-100 shadow-inner">
         <Footer />
       </footer>
+
+      {/* Add the component here */}
+      <ScrollToTop />
     </div>
   );
 };

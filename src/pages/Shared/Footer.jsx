@@ -10,7 +10,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
           {/* Column 1: Branding */}
           <div className="space-y-6">
-            <Logo />
+            <Logo variant="light" />
             <p className="text-sm leading-relaxed text-slate-400">
               Empowering HR teams with enterprise-grade asset management.
               Streamline your workflow and secure your company gear.
