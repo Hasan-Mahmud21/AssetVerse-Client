@@ -7,8 +7,10 @@ import {
   FaClipboardCheck,
   FaUserCircle,
   FaSignOutAlt,
+  FaChevronRight,
 } from "react-icons/fa";
 import useAuth from "../hooks/useAuth";
+import Logo from "../components/Logo/Logo";
 
 const EmployeeDashboardLayout = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -21,11 +23,14 @@ const EmployeeDashboardLayout = () => {
   };
 
   const navClass = ({ isActive }) =>
-    isActive ? "bg-primary text-white font-semibold" : "hover:bg-base-200";
+    `flex items-center justify-between gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${
+      isActive
+        ? "bg-blue-600 text-white shadow-lg shadow-blue-200"
+        : "text-slate-600 hover:bg-blue-50 hover:text-blue-600"
+    }`;
 
   return (
-    <div className="drawer lg:drawer-open min-h-screen bg-base-200">
-      {/* Drawer Toggle */}
+    <div className="drawer lg:drawer-open min-h-screen bg-slate-50">
       <input
         id="employee-dashboard-drawer"
         type="checkbox"
@@ -34,90 +39,134 @@ const EmployeeDashboardLayout = () => {
         onChange={() => setIsOpen(!isOpen)}
       />
 
-      {/* MAIN CONTENT */}
+      {/* MAIN CONTENT AREA */}
       <div className="drawer-content flex flex-col">
-        {/* Top Bar */}
-        <div className="p-4 bg-base-100 shadow flex items-center justify-between">
-          <label
-            htmlFor="employee-dashboard-drawer"
-            className="btn btn-ghost lg:hidden"
-            onClick={() => setIsOpen(!isOpen)}
-          >
-            <FaBars size={22} />
-          </label>
-
-          <h2 className="text-xl font-bold">Employee Dashboard</h2>
-
-          <div className="flex items-center gap-2">
-            <span className="font-semibold hidden sm:block">
-              {user?.displayName || "Employee"}
-            </span>
-            <img
-              src={user?.photoURL || "https://i.ibb.co/0jYtM7B/user.png"}
-              alt="User"
-              className="w-10 h-10 rounded-full border shadow-sm"
-            />
+        {/* REFINED TOP BAR */}
+        <header className="sticky top-0 z-30 flex h-18 w-full items-center justify-between bg-white/80 px-4 shadow-sm backdrop-blur-md lg:px-8">
+          <div className="flex items-center gap-4">
+            <label
+              htmlFor="employee-dashboard-drawer"
+              className="btn btn-ghost btn-circle lg:hidden"
+            >
+              <FaBars size={20} className="text-slate-600" />
+            </label>
+            <h2 className="text-lg font-bold tracking-tight text-slate-800 lg:text-xl">
+              Employee Portal{" "}
+              <span className="hidden sm:inline text-blue-600 text-sm font-medium ml-2">
+                / Workspace
+              </span>
+            </h2>
           </div>
-        </div>
 
-        {/* PAGE CONTENT */}
-        <div className="p-6">
-          <Outlet />
-        </div>
+          <div className="flex items-center gap-3 lg:gap-4">
+            <div className="text-right hidden sm:block">
+              <p className="text-sm font-bold text-slate-900 leading-none">
+                {user?.displayName || "Employee"}
+              </p>
+              <p className="text-[10px] uppercase tracking-widest text-blue-600 font-bold">
+                Staff Member
+              </p>
+            </div>
+            <div className="avatar ring-2 ring-blue-100 rounded-full p-0.5 shadow-sm">
+              <div className="w-10 rounded-full">
+                <img
+                  src={user?.photoURL || "https://i.ibb.co/0jYtM7B/user.png"}
+                  alt="User Profile"
+                />
+              </div>
+            </div>
+          </div>
+        </header>
+
+        {/* PAGE INJECTION */}
+        <main className="flex-1 overflow-y-auto p-4 lg:p-8">
+          <div className="mx-auto max-w-7xl">
+            <Outlet />
+          </div>
+        </main>
       </div>
 
-      {/* SIDEBAR */}
-      <div className="drawer-side">
+      {/* SIDEBAR NAVIGATION */}
+      <div className="drawer-side z-40">
         <label
           htmlFor="employee-dashboard-drawer"
           className="drawer-overlay"
           onClick={() => setIsOpen(false)}
         />
 
-        <ul className="menu p-4 w-72 min-h-full bg-base-100 text-base-content shadow-xl">
-          <h3 className="text-lg font-bold mb-3 text-primary">
-            Employee Navigation
-          </h3>
+        <aside className="flex h-full w-72 flex-col bg-white border-r border-slate-100">
+          {/* Sidebar Header */}
+          <div className="flex h-18 items-center px-6 border-b border-slate-50">
+            <Logo />
+          </div>
 
-          <li>
-            <NavLink to="/employee/dashboard" className={navClass}>
-              <FaLaptop /> Dashboard
-            </NavLink>
-          </li>
+          <div className="flex-1 overflow-y-auto py-6 px-4">
+            <p className="px-4 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 mb-4">
+              Overview
+            </p>
 
-          <li>
-            <NavLink to="/employee/my-assets" className={navClass}>
-              <FaLaptop /> My Assets
-            </NavLink>
-          </li>
+            <ul className="space-y-2 font-medium">
+              <li>
+                <NavLink to="/employee/dashboard" className={navClass}>
+                  <span className="flex items-center gap-3">
+                    <FaLaptop /> Dashboard
+                  </span>
+                  <FaChevronRight className="text-[10px] opacity-0 group-hover:opacity-100 transition-opacity" />
+                </NavLink>
+              </li>
 
-          <li>
-            <NavLink to="/employee/my-team" className={navClass}>
-              <FaUsers /> My Team
-            </NavLink>
-          </li>
+              <li>
+                <NavLink to="/employee/my-assets" className={navClass}>
+                  <span className="flex items-center gap-3">
+                    <FaLaptop /> My Assets
+                  </span>
+                  <FaChevronRight className="text-[10px] opacity-0 group-hover:opacity-100 transition-opacity" />
+                </NavLink>
+              </li>
 
-          <li>
-            <NavLink to="/employee/request-asset" className={navClass}>
-              <FaClipboardCheck /> Request Asset
-            </NavLink>
-          </li>
+              <li>
+                <NavLink to="/employee/my-team" className={navClass}>
+                  <span className="flex items-center gap-3">
+                    <FaUsers /> My Team
+                  </span>
+                  <FaChevronRight className="text-[10px] opacity-0 group-hover:opacity-100 transition-opacity" />
+                </NavLink>
+              </li>
 
-          <li>
-            <NavLink to="/employee/profile" className={navClass}>
-              <FaUserCircle /> Profile
-            </NavLink>
-          </li>
+              <li>
+                <NavLink to="/employee/request-asset" className={navClass}>
+                  <span className="flex items-center gap-3">
+                    <FaClipboardCheck /> Request Asset
+                  </span>
+                  <FaChevronRight className="text-[10px] opacity-0 group-hover:opacity-100 transition-opacity" />
+                </NavLink>
+              </li>
 
-          <li>
+              <div className="pt-4 mt-4 border-t border-slate-50">
+                <p className="px-4 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 mb-4">
+                  Account
+                </p>
+                <li>
+                  <NavLink to="/employee/profile" className={navClass}>
+                    <span className="flex items-center gap-3">
+                      <FaUserCircle /> Profile
+                    </span>
+                  </NavLink>
+                </li>
+              </div>
+            </ul>
+          </div>
+
+          {/* SIDEBAR FOOTER / LOGOUT */}
+          <div className="p-4 border-t border-slate-50">
             <button
               onClick={handleLogout}
-              className="flex items-center gap-2 text-red-500 hover:bg-red-50 p-2 rounded"
+              className="flex w-full items-center gap-3 px-4 py-3 text-sm font-bold text-rose-500 hover:bg-rose-50 rounded-xl transition-colors"
             >
               <FaSignOutAlt /> Logout
             </button>
-          </li>
-        </ul>
+          </div>
+        </aside>
       </div>
     </div>
   );
