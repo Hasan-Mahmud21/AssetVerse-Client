@@ -2,24 +2,33 @@ import React from "react";
 import Logo from "../../components/Logo/Logo";
 import { Link, NavLink } from "react-router";
 import useAuth from "../../hooks/useAuth";
+import useAxios from "../../hooks/useAxios";
+import { useQuery } from "@tanstack/react-query";
 
 const NavBar = () => {
-  const { user, logOutUser, role } = useAuth();
+  const { user, logOutUser } = useAuth();
+  const axiosPublic = useAxios();
+
+  // 1. Fetch the REAL role from the database, same as your routes do
+  const { data: dbRole, isLoading } = useQuery({
+    queryKey: ["role", user?.email],
+    enabled: !!user?.email,
+    queryFn: async () => {
+      const res = await axiosPublic.get(`/users/${user.email}`);
+      return res.data?.role; // returns "hr" or "employee"
+    },
+  });
 
   const handleLogOut = () => {
     logOutUser().catch((err) => console.log(err));
   };
 
-  // Standardized link styling
   const navActionClass = ({ isActive }) =>
     `px-4 py-2 rounded-xl text-sm font-bold transition-all duration-200 ${
       isActive
         ? "bg-blue-600 text-white shadow-lg shadow-blue-200"
         : "text-slate-600 hover:bg-blue-50 hover:text-blue-600"
     }`;
-
-  /* MATCHING ROUTER.JSX PATHS
-   */
 
   const hrLinks = (
     <>
@@ -64,13 +73,9 @@ const NavBar = () => {
     </>
   );
 
-  // Helper to identify user type based on your Router logic
-  const isHrManager = role === "hr-manager" || role === "hr";
-
   return (
     <div className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md border-b border-slate-100">
-      <div className="navbar max-w-7xl mx-auto px-4 min-h-[4.5rem]">
-        {/* START: Logo & Mobile Menu */}
+      <div className="navbar max-w-7xl mx-auto px-4 min-h-18">
         <div className="navbar-start">
           <div className="dropdown">
             <div
@@ -109,10 +114,12 @@ const NavBar = () => {
                     <NavLink to="/auth/hr-register">Join as HR Manager</NavLink>
                   </li>
                 </>
-              ) : isHrManager ? (
-                hrLinks
               ) : (
-                employeeLinks
+                <>
+                  {/* Using dbRole here ensures the Navbar menu matches the Route Guard access */}
+                  {dbRole === "hr" && hrLinks}
+                  {dbRole === "employee" && employeeLinks}
+                </>
               )}
             </ul>
           </div>
@@ -121,36 +128,23 @@ const NavBar = () => {
           </Link>
         </div>
 
-        {/* CENTER: Desktop Navigation */}
         <div className="navbar-center hidden lg:flex">
           <div className="flex gap-2 bg-slate-50 p-1.5 rounded-2xl border border-slate-100">
             <NavLink to="/" className={navActionClass}>
               Home
             </NavLink>
 
-            {user && (
+            {user && !isLoading && (
               <NavLink
-                to={isHrManager ? "/hr/dashboard" : "/employee/dashboard"}
+                to={dbRole === "hr" ? "/hr/dashboard" : "/employee/dashboard"}
                 className={navActionClass}
               >
                 Dashboard
               </NavLink>
             )}
-
-            {!user && (
-              <>
-                <NavLink to="/auth/emp-register" className={navActionClass}>
-                  Join as Employee
-                </NavLink>
-                <NavLink to="/auth/hr-register" className={navActionClass}>
-                  Join as HR Manager
-                </NavLink>
-              </>
-            )}
           </div>
         </div>
 
-        {/* END: User Profile & Auth */}
         <div className="navbar-end gap-4">
           {user ? (
             <div className="dropdown dropdown-end">
@@ -182,11 +176,13 @@ const NavBar = () => {
                   Account Management
                 </li>
 
-                {/* Dynamically show links based on HR or Employee role */}
-                {isHrManager ? hrLinks : employeeLinks}
+                {isLoading ? (
+                  <li className="p-2 text-xs italic">Verifying role...</li>
+                ) : (
+                  <>{dbRole === "hr" ? hrLinks : employeeLinks}</>
+                )}
 
                 <div className="divider my-1 opacity-50"></div>
-
                 <li>
                   <button
                     onClick={handleLogOut}
@@ -214,7 +210,7 @@ const NavBar = () => {
           ) : (
             <Link
               to="/auth/login"
-              className="btn bg-slate-900 hover:bg-slate-800 text-white border-none px-8 rounded-xl font-bold transition-all shadow-lg active:scale-95"
+              className="btn bg-slate-900 hover:bg-slate-800 text-white border-none px-8 rounded-xl font-bold"
             >
               Sign In
             </Link>

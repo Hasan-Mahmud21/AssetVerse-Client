@@ -8,7 +8,7 @@ const EmployeeRoute = ({ children }) => {
   const axiosPublic = useAxios();
   const location = useLocation();
 
-  // 🔑 ALWAYS call hooks at top level
+  
   const {
     data: role,
     isLoading: roleLoading,
