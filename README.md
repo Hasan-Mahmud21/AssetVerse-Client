@@ -1,17 +1,111 @@
-# React + Vite
+AssetVerse | Corporate Asset Management System
+AssetVerse is a comprehensive B2B digital platform designed to help companies efficiently manage their physical assets and track equipment distribution among employees. It streamlines the lifecycle of corporate property, from procurement and HR approval to employee returns.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+🚀 Live Site
+https://asset-verse-clientside.netlify.app/
 
-Currently, two official plugins are available:
+📋 Project Overview
+AssetVerse serves two primary user roles:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+HR Managers: Can register their company, manage asset inventory (Returnable vs. Non-returnable), approve/reject employee requests, and monitor team affiliations.
 
-## React Compiler
+Employees: Can request assets from registered companies, track their assigned equipment, and view their team members once affiliated with a company.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+🔑 Credentials for Testing
+HR Manager Admin: alex@morgan.com | alex1234
 
-## Expanding the ESLint configuration
+Employee: munna@gmail.com | munna1234
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
-"# AssetVerse-Client" 
+✨ Key Features
+
+🏢 HR Management
+Inventory Control: Full CRUD operations for assets with automated stock tracking.
+
+Request Pipeline: A centralized dashboard to approve or reject asset requests with custom notes.
+
+Auto-Affiliation: Employees are automatically added to the company roster upon their first approved request.
+
+Package System: HRs start with a 5-employee limit.
+
+Stripe Integration: Secure payment gateway to upgrade employee limits (Basic, Standard, Premium packages).
+
+Reporting: Data visualization using charts to show most requested items and asset types.
+
+👨‍💻 Employee Features
+Request System: Browse available assets and request items with a simple modal interface.
+
+My Assets: View a personalized list of pending and approved assets with PDF printing capabilities.
+
+Team View: See colleagues within the same affiliated company.
+
+Asset Returns: Easily return "Returnable" items to update the company inventory in real-time.
+
+🛠️ Tech Stack & Packages
+Frontend
+UI Framework: React (Vite)
+
+Styling: Tailwind CSS & DaisyUI
+
+State Management & Data Fetching: TanStack Query (React Query) & Axios
+
+Authentication: Firebase Authentication
+
+Forms: React Hook Form
+
+Other: Recharts (Analytics), React-to-print (PDF), SweetAlert2 (Modals), Stripe-js.
+
+Backend
+Runtime: Node.js
+
+Framework: Express.js
+
+Database: MongoDB with Mongoose ODM
+
+Security: JSON Web Tokens (JWT) & Dotenv
+
+Payments: Stripe Node SDK
+
+⚙️ Setup & Installation
+
+1. Clone the Repositories
+
+git clone https://github.com/Hasan-Mahmud21/AssetVerse-Client
+git clone https://github.com/Hasan-Mahmud21/AssetVerse-Server
+
+2. Install Dependencies
+Client Side:
+
+cd Assetverse-Client
+npm install
+
+Server Side:
+cd assetverse-server
+npm install
+
+3. Environment Configuration
+Create a .env file in both the client and server directories.
+
+Client (.env.local):
+
+VITE_apiKey=your_firebase_api_key
+VITE_authDomain=your_project.firebaseapp.com
+VITE_projectId=your_project_id
+VITE_storageBucket=your_project.appspot.com
+VITE_messagingSenderId=your_sender_id
+VITE_appId=your_app_id
+VITE_STRIPE_PAYMENT_KEY=your_stripe_pk
+
+Server (.env):
+
+DB_USER=your_mongodb_username
+DB_PASS=your_mongodb_password
+CLIENT_URL=your_client_url
+STRIPE_SECRET_KEY=your_stripe_sk
+
+4. Run the Project
+Server: npm start (or nodemon index.js) Client: npm run dev
+
+
+
+
+
