@@ -152,6 +152,7 @@ const HrDashboardLayout = () => {
                   <FaChevronRight className="text-[10px] opacity-0 group-hover:opacity-100 transition-opacity" />
                 </NavLink>
               </li>
+             
 
               <div className="pt-4 mt-4 border-t border-slate-50">
                 <p className="px-4 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 mb-4">
