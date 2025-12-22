@@ -19,6 +19,7 @@ Employee: munna@gmail.com | munna1234
 ✨ Key Features
 
 🏢 HR Management
+
 Inventory Control: Full CRUD operations for assets with automated stock tracking.
 
 Request Pipeline: A centralized dashboard to approve or reject asset requests with custom notes.
@@ -73,7 +74,7 @@ git clone https://github.com/Hasan-Mahmud21/AssetVerse-Client
 git clone https://github.com/Hasan-Mahmud21/AssetVerse-Server
 
 2. Install Dependencies
-Client Side:
+   Client Side:
 
 cd Assetverse-Client
 npm install
@@ -83,7 +84,7 @@ cd assetverse-server
 npm install
 
 3. Environment Configuration
-Create a .env file in both the client and server directories.
+   Create a .env file in both the client and server directories.
 
 Client (.env.local):
 
@@ -103,9 +104,4 @@ CLIENT_URL=your_client_url
 STRIPE_SECRET_KEY=your_stripe_sk
 
 4. Run the Project
-Server: npm start (or nodemon index.js) Client: npm run dev
-
-
-
-
-
+   Server: npm start (or nodemon index.js) Client: npm run dev

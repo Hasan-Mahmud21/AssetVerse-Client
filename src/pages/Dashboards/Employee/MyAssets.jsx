@@ -98,7 +98,7 @@ const MyAssets = () => {
               <tr key={asset._id}>
                 <td>
                   <img
-                    src={asset.assetImage}
+                    src={asset.image}
                     alt={asset.assetName}
                     className="w-12 h-12 object-cover rounded"
                   />
